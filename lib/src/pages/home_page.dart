@@ -1,4 +1,6 @@
+import 'package:componentes/src/pages/alert_page.dart';
 import 'package:componentes/src/providers/menu_provider.dart';
+import 'package:componentes/src/utils/icon_string_util.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -12,24 +14,23 @@ class HomePage extends StatelessWidget {
   _lista() {
     return FutureBuilder(
         future: menuProvider.cargarData(),
-        builder: (context, snapshot) {
-          return ListView(
-            children: _crearHijos(snapshot.data),
-          );
-        });
+        builder: (context, snapshot) => ListView(
+              children: _crearHijos(snapshot.data, context),
+            ));
   }
 
-  List<Widget> _crearHijos(List<dynamic> objects) {
-    return objects.map((element) {
-      print(element);
-      return ListTile(
-        title: Text(element['texto']),
-        leading: Icon(Icons.account_circle, color: Colors.blue[500]),
-        trailing: Icon(Icons.arrow_forward, color: Colors.blue[500]),
-        onTap: () {
-          print(element['ruta']);
-        },
-      );
-    }).toList();
+  List<Widget> _crearHijos(List<dynamic> objects, context) {
+    return objects
+        .map((element) => ListTile(
+              title: Text(element['texto']),
+              leading: Icon(getIcon(element['icon']), color: Colors.blue[500]),
+              trailing: Icon(Icons.arrow_forward, color: Colors.blue[500]),
+              onTap: () {
+                final route =
+                    MaterialPageRoute(builder: (context) => AlertPage());
+                Navigator.push(context, route);
+              },
+            ))
+        .toList();
   }
 }
