@@ -1,4 +1,3 @@
-import 'package:componentes/src/pages/alert_page.dart';
 import 'package:componentes/src/providers/menu_provider.dart';
 import 'package:componentes/src/utils/icon_string_util.dart';
 import 'package:flutter/material.dart';
@@ -20,15 +19,17 @@ class HomePage extends StatelessWidget {
   }
 
   List<Widget> _crearHijos(List<dynamic> objects, context) {
+    if (objects == null) {
+      return [];
+    }
+
     return objects
         .map((element) => ListTile(
               title: Text(element['texto']),
               leading: Icon(getIcon(element['icon']), color: Colors.blue[500]),
               trailing: Icon(Icons.arrow_forward, color: Colors.blue[500]),
               onTap: () {
-                final route =
-                    MaterialPageRoute(builder: (context) => AlertPage());
-                Navigator.push(context, route);
+                Navigator.pushNamed(context, element['ruta']);
               },
             ))
         .toList();
