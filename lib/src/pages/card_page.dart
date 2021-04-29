@@ -24,7 +24,8 @@ class CardPage extends StatelessWidget {
 }
 
 Widget _cardTipo1() => Card(
-        child: Column(
+    elevation: 10.0,
+    child: Column(
       children: [
         ListTile(
           leading: Icon(Icons.photo_album_outlined, color: Colors.blue[600]),
@@ -42,7 +43,12 @@ Widget _cardTipo1() => Card(
     ));
 
 Widget _cardTipo2() => Card(
-        child: Column(
+    elevation: 10.0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+    clipBehavior: Clip.antiAlias,
+    child: Column(
       children: [
         FadeInImage(
           placeholder: AssetImage('assets/loading-icon-gif-6.gif'),

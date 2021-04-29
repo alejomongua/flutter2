@@ -13,6 +13,7 @@ class HomePage extends StatelessWidget {
   _lista() {
     return FutureBuilder(
         future: menuProvider.cargarData(),
+        // initialData: [],
         builder: (context, snapshot) => ListView(
               children: _crearHijos(snapshot.data, context),
             ));
