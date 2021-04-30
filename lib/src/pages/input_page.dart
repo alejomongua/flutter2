@@ -12,10 +12,23 @@ class _InputPageState extends State<InputPage> {
   String _email = '';
   String _password = '';
 
+  final List<String> _idiomas = [
+    'Español',
+    'Inglés',
+    'Francés',
+    'Italiano',
+    'Portugués',
+  ];
+
+  String _idiomaSeleccionado = '';
   TextEditingController _inputFieldDateController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    if (_idiomaSeleccionado == '') {
+      _idiomaSeleccionado = _idiomas[0];
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Inputs'),
@@ -30,6 +43,8 @@ class _InputPageState extends State<InputPage> {
           _crearPassword(),
           Divider(),
           _crearFecha(context),
+          Divider(),
+          _crearDropdown(),
           Divider(),
           _crearPersona(),
         ],
@@ -58,6 +73,7 @@ class _InputPageState extends State<InputPage> {
   Widget _crearPersona() => ListTile(
         title: Text(_nombre),
         leading: Text(_email),
+        trailing: Text(_idiomaSeleccionado),
       );
 
   _crearEmail() => TextField(
@@ -110,6 +126,36 @@ class _InputPageState extends State<InputPage> {
           suffixIcon: Icon(Icons.calendar_today),
           icon: Icon(Icons.calendar_today_outlined),
         ),
+      );
+
+  List<DropdownMenuItem<String>> _dropdownMenuItems() {
+    List<DropdownMenuItem<String>> lista = [];
+
+    _idiomas.forEach((element) {
+      lista.add(DropdownMenuItem(
+        child: Text(element),
+        value: element,
+      ));
+    });
+
+    return lista;
+  }
+
+  _crearDropdown() => Row(
+        children: [
+          Icon(Icons.list),
+          SizedBox(width: 30),
+          Expanded(
+            child: DropdownButton(
+              value: _idiomaSeleccionado,
+              onChanged: (item) {
+                _idiomaSeleccionado = item;
+                setState(() {});
+              },
+              items: _dropdownMenuItems(),
+            ),
+          ),
+        ],
       );
 
   _selectDate(context) async {
