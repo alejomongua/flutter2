@@ -1,4 +1,5 @@
 import 'package:componentes/src/pages/alert_page.dart';
+import 'package:componentes/src/pages/animated_container_page.dart';
 import 'package:componentes/src/pages/avatar_page.dart';
 import 'package:componentes/src/pages/card_page.dart';
 import 'package:componentes/src/pages/home_page.dart';
@@ -9,4 +10,5 @@ final routes = <String, WidgetBuilder>{
   'alert': (context) => AlertPage(),
   'avatar': (context) => AvatarPage(),
   'card': (context) => CardPage(),
+  'animatedContainer': (context) => AnimatedContainerPage(),
 };
