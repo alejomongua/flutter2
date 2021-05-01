@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class ListaPage extends StatefulWidget {
   ListaPage({Key key}) : super(key: key);
@@ -14,6 +15,8 @@ class _ListaPageState extends State<ListaPage> {
 
   int _ultimoNumero = 0;
 
+  bool _cargando = false;
+
   @override
   void initState() {
     super.initState();
@@ -23,10 +26,17 @@ class _ListaPageState extends State<ListaPage> {
 
     _scrollController.addListener(() {
       ScrollPosition pos = _scrollController.position;
-      if (pos.pixels == pos.maxScrollExtent - 100) {
-        _agregarMas();
+      if (pos.pixels >= pos.maxScrollExtent - 100) {
+        _fetchData();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // Para prevenir fugas de memoria
+    _scrollController.dispose();
   }
 
   @override
@@ -35,28 +45,76 @@ class _ListaPageState extends State<ListaPage> {
       appBar: AppBar(
         title: Text('Listas'),
       ),
-      body: _crearLista(),
+      body: Stack(children: [
+        _crearLista(),
+        _crearLoading(),
+      ]),
     );
   }
 
-  _crearLista() => ListView.builder(
-        controller: _scrollController,
-        itemCount: _listaNumeros.length,
-        itemBuilder: (context, index) {
-          final image = _listaNumeros[index];
-
-          return FadeInImage(
-            placeholder: AssetImage('assets/loading-icon-gif-6.gif'),
-            image: NetworkImage('https://picsum.photos/500/300/?image=$image'),
-          );
+  _crearLista() => RefreshIndicator(
+        onRefresh: () async {
+          return Timer(Duration(seconds: 2), () {
+            _listaNumeros.clear();
+            _ultimoNumero++;
+            _agregarMas();
+          });
         },
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: _listaNumeros.length,
+          itemBuilder: (context, index) {
+            final image = _listaNumeros[index];
+
+            return FadeInImage(
+              placeholder: AssetImage('assets/loading-icon-gif-6.gif'),
+              image:
+                  NetworkImage('https://picsum.photos/500/300/?image=$image'),
+            );
+          },
+        ),
       );
 
   _agregarMas() {
-    for (var i = 1; i <= 10; i++) {
+    for (var i = 0; i < 5; i++) {
       setState(() {
         _listaNumeros.add(++_ultimoNumero);
       });
     }
+  }
+
+  _fetchData() async {
+    setState(() {
+      _cargando = true;
+    });
+    return Timer(Duration(seconds: 2), () {
+      _agregarMas();
+      _cargando = false;
+      _scrollController.animateTo(_scrollController.position.pixels + 100,
+          duration: Duration(
+            milliseconds: 250,
+          ),
+          curve: Curves.linear);
+    });
+  }
+
+  _crearLoading() {
+    if (_cargando) {
+      return Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [CircularProgressIndicator()],
+          ),
+          SizedBox(
+            height: 20,
+          )
+        ],
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.end,
+      );
+    }
+
+    return Container();
   }
 }
